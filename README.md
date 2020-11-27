@@ -1,6 +1,7 @@
 # Introduction
 
-This is my project of a tile based rpg written in python.
+This is my project of a tile based rpg written in python.  
+Launch **Game2.py** to play the game.
 
 ### Library used:
 
