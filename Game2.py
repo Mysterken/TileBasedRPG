@@ -5,13 +5,14 @@ import sprites
 import pyscroll, pyscroll.data
 from pyscroll.group import PyscrollGroup
 from sprites import Player
-from menu import MenuFunction, TitleScreenMenu
+from menu import MenuFunction, TitleScreenMenu, InGameMenu
 from pygame.locals import *
 from settings import WIDTH, HEIGHT, FPS, TITLE, TILESIZE
 from pytmx.util_pygame import load_pygame
+from usefulfunction import FUNCTION
 
 class Game:
-    
+  
     def __init__(self):       
         
         pg.init()
@@ -29,10 +30,14 @@ class Game:
         
         # Load data from pytmx
         self.tmx_data = load_pygame(MAP)
-
+        
+        self.SpawnPoint = self.tmx_data.get_object_by_name("SpawnPoint")
+        self.SpawnPoint = [self.SpawnPoint.x / 32, self.SpawnPoint.y / 32]
+        
         # Setup level geometry with simple pygame rects, loaded from pytmx
         self.walls = []
-        for obj in self.tmx_data.objects:
+        Obstacle = self.tmx_data.get_layer_by_name("Obstacle")
+        for obj in Obstacle:
             self.walls.append(pg.Rect(obj.x, obj.y, obj.width, obj.height))
 
         # Create new data source for pyscroll
@@ -56,16 +61,18 @@ class Game:
         self.player = Player()
 
         # Set player's spawn position
-        self.player._position[0] += 12
-        self.player._position[1] += 10
+        self.player._position = self.SpawnPoint
 
         # Add player to the group
         self.group.add(self.player)
- 
+
+        # Create menu
+        self.IGM = InGameMenu()
+
     def main(self):
 
         while True:
-            
+
             dt = self.FPSCap.tick(FPS) / 1000
 
             # Event handler
@@ -78,46 +85,41 @@ class Game:
             self.draw()
             pg.display.flip()
 
-    def quit(self):      
+    def quit(self):
         pg.quit()
         sys.exit()
     
     def update(self, dt):   
         
+        # If the In-game menu is enabled don't update the game, only the menu
+        if self.IGM.InGameM.is_enabled():
+            self.IGM.InGameM.update(self.EventsList)
+            return
+        
         # Tasks that occur over time are handled here
         self.group.update(dt)
         
-        # Check if predicted rect X, Y collide with wall or map limit, if so: do not move on it's axis  
-        def UpdateAndCollision(self):
-        
-            # Default axis to change, remove one if collision detected
-            ToChangeList = ["X", "Y"]
-
-            for player in self.group.sprites():
-                
-                if (player.RectXChanged.collidelist(self.walls) > -1 
-                    or self.player.TemPosition[0] < 0
-                    or self.player.TemPosition[0] > self.tmx_data.width -1):
-                    ToChangeList.remove("X")
-
-                if (player.RectYChanged.collidelist(self.walls) > -1 
-                    or self.player.TemPosition[1] < 0
-                    or self.player.TemPosition[1] > self.tmx_data.height -1):
-                    ToChangeList.remove("Y")
-
-            self.player.PositionUpdate(ToChangeList)
-        
         # Move player while taking in account collision
         #self.player.MoveUpdate()
-        UpdateAndCollision(self)
-                             
+        FUNCTION.UpdateAndCollision(self)
+                         
     def draw(self):
-        
+
         # Center player
         self.group.center(self.player.rect.center)
 
         # Draw the map and all sprites
-        self.group.draw(self.DirtyScreen)
+        self.group.draw(self.DirtyScreen)  
+
+        if self.IGM.InGameM.is_enabled():
+
+            # Darken the screen and display the menu
+            darken = pg.Surface(self.ScreenSize)
+            darken.set_alpha(130)
+            darken.fill((0,0,0))
+
+            self.DirtyScreen.blit(darken, (0,0))
+            self.IGM.InGameM.draw(self.DirtyScreen)
 
         # Draw screen from the DirtyScreen and scale if Fullscreen
         if self.IsFullscreen:
@@ -125,26 +127,28 @@ class Game:
         else:
             self.Screen.blit(self.DirtyScreen, (0, 0))
         
-
     def events(self):
 
-        # Catch all events here
-        for event in pg.event.get():
+        self.EventsList = pg.event.get()
 
+        # Catch all events here
+        for event in self.EventsList:
+            
             # Quit if:
             if event.type == pg.QUIT:
-                self.quit()
+                FUNCTION.quit(self)
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_ESCAPE:
-                    self.quit()
+                    FUNCTION.quit(self)
+                if event.key == pg.K_x:
+                    self.IGM.InGameM.toggle()
                 if event.key == pg.K_F12:
                     
                     if not self.IsFullscreen:
-                        self.IsFullscreen = True
                         self.Screen = pg.display.set_mode(self.ScreenSize, pg.FULLSCREEN)
-                    else:
-                        self.IsFullscreen = False   
+                    else: 
                         self.Screen = pg.display.set_mode(self.ScreenSize)
+                    self.IsFullscreen = not self.IsFullscreen
             
             # Zoom and dezoom
             if event.type == pg.MOUSEBUTTONDOWN:
@@ -158,7 +162,7 @@ g = Game()
 
 # Title screen launch
 TS = TitleScreenMenu()
-TS.Show(g.Screen, g.DirtyScreen, g.ScreenSize)
+TS.ShowTS(g.Screen, g.DirtyScreen, g.ScreenSize)
 
 # If a new game is launched
 if TS.NewGame:
