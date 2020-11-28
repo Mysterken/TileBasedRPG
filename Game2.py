@@ -84,10 +84,6 @@ class Game:
             # Display
             self.draw()
             pg.display.flip()
-
-    def quit(self):
-        pg.quit()
-        sys.exit()
     
     def update(self, dt):   
         
@@ -100,7 +96,6 @@ class Game:
         self.group.update(dt)
         
         # Move player while taking in account collision
-        #self.player.MoveUpdate()
         FUNCTION.UpdateAndCollision(self)
                          
     def draw(self):
@@ -111,9 +106,9 @@ class Game:
         # Draw the map and all sprites
         self.group.draw(self.DirtyScreen)  
 
+        # Darken the screen and display the menu
         if self.IGM.InGameM.is_enabled():
 
-            # Darken the screen and display the menu
             darken = pg.Surface(self.ScreenSize)
             darken.set_alpha(130)
             darken.fill((0,0,0))
@@ -138,20 +133,25 @@ class Game:
             if event.type == pg.QUIT:
                 FUNCTION.quit(self)
             if event.type == pg.KEYDOWN:
+                
                 if event.key == pg.K_ESCAPE:
                     FUNCTION.quit(self)
+                
                 if event.key == pg.K_x:
                     self.IGM.InGameM.toggle()
+                
                 if event.key == pg.K_F12:
                     
                     if not self.IsFullscreen:
                         self.Screen = pg.display.set_mode(self.ScreenSize, pg.FULLSCREEN)
                     else: 
                         self.Screen = pg.display.set_mode(self.ScreenSize)
+                    
                     self.IsFullscreen = not self.IsFullscreen
             
             # Zoom and dezoom
             if event.type == pg.MOUSEBUTTONDOWN:
+                
                 if event.button == 4:
                     self.map_layer.zoom += 0.1
                 elif event.button == 5:
