@@ -25,7 +25,7 @@ class Player(pg.sprite.Sprite):
 
     # Function assigned to what keys are pressed
     def KeyPress(self):
-        
+
         keys = pg.key.get_pressed()
         self.TempVelocity = self.velocity
         self.Sprinting = False
@@ -49,8 +49,8 @@ class Player(pg.sprite.Sprite):
             self.TemPList.append("Down")
 
     # Create a list of coordinate according to movement
-    def update(self, dt):      
-        
+    def update(self, dt):
+
         self.TemPList = []
         self.TemPosition = self.position
         self.OldPosition = self.position
@@ -71,7 +71,7 @@ class Player(pg.sprite.Sprite):
                 self._position[0] = self.TemPosition[0]
             else:
                 self._position[1] = self.TemPosition[1]
-        
+
         # Assign surface according to position and TILESIZE then animate the character
         self.rect.x = self._position[0] * TILESIZE
         self.rect.y = self._position[1] * TILESIZE
@@ -96,7 +96,7 @@ class Player(pg.sprite.Sprite):
             elif "Left" in direction:
                 self.Facing = "Left"
             elif "Right" in direction:
-                self.Facing = "Right"    
+                self.Facing = "Right"
 
             if self.counter > AnimationSpeed / 2:
                 anim = "Move1"

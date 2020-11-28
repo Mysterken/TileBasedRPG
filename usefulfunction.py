@@ -8,7 +8,7 @@ class FUNCTION():
         pg.quit()
         sys.exit()
 
-    # Check if predicted rect X, Y collide with wall or map limit, if so: do not move on it's axis  
+    # Check if predicted rect X, Y collide with wall or map limit, if so: do not move on it's axis
     def UpdateAndCollision(self):
     
         # Default axis to change, remove one if collision detected
@@ -16,7 +16,7 @@ class FUNCTION():
 
         for player in self.group.sprites():
             
-            if (player.RectXChanged.collidelist(self.walls) > -1 
+            if (player.RectXChanged.collidelist(self.walls) > -1
                 or self.player.TemPosition[0] < 0
                 or self.player.TemPosition[0] > self.tmx_data.width -1):
                 ToChangeList.remove("X")

@@ -12,9 +12,9 @@ from pytmx.util_pygame import load_pygame
 from usefulfunction import FUNCTION
 
 class Game:
-  
-    def __init__(self):       
-        
+
+    def __init__(self):
+
         pg.init()
 
         # Set the display
@@ -27,13 +27,13 @@ class Game:
 
     # Load given map to display
     def LoadData(self, MAP):
-        
+
         # Load data from pytmx
         self.tmx_data = load_pygame(MAP)
-        
+
         self.SpawnPoint = self.tmx_data.get_object_by_name("SpawnPoint")
         self.SpawnPoint = [self.SpawnPoint.x / 32, self.SpawnPoint.y / 32]
-        
+
         # Setup level geometry with simple pygame rects, loaded from pytmx
         self.walls = []
         Obstacle = self.tmx_data.get_layer_by_name("Obstacle")
@@ -53,11 +53,11 @@ class Game:
 
     # Create a new game
     def new(self):
-        
+
         # Choose a map for new game and load it
         self.MapChosen = "Map1.tmx"
         self.LoadData(self.MapChosen)
-        
+
         self.player = Player()
 
         # Set player's spawn position
@@ -84,27 +84,27 @@ class Game:
             # Display
             self.draw()
             pg.display.flip()
-    
-    def update(self, dt):   
-        
+
+    def update(self, dt):
+
         # If the In-game menu is enabled don't update the game, only the menu
         if self.IGM.InGameM.is_enabled():
             self.IGM.InGameM.update(self.EventsList)
             return
-        
+
         # Tasks that occur over time are handled here
         self.group.update(dt)
-        
+
         # Move player while taking in account collision
         FUNCTION.UpdateAndCollision(self)
-                         
+
     def draw(self):
 
         # Center player
         self.group.center(self.player.rect.center)
 
         # Draw the map and all sprites
-        self.group.draw(self.DirtyScreen)  
+        self.group.draw(self.DirtyScreen)
 
         # Darken the screen and display the menu
         if self.IGM.InGameM.is_enabled():
@@ -121,34 +121,34 @@ class Game:
             pg.transform.smoothscale(self.DirtyScreen, self.Screen.get_size(), self.Screen)
         else:
             self.Screen.blit(self.DirtyScreen, (0, 0))
-        
+
     def events(self):
 
         self.EventsList = pg.event.get()
 
         # Catch all events here
         for event in self.EventsList:
-            
+
             # Quit if:
             if event.type == pg.QUIT:
                 FUNCTION.quit(self)
             if event.type == pg.KEYDOWN:
-                
+
                 if event.key == pg.K_ESCAPE:
                     FUNCTION.quit(self)
-                
+
                 if event.key == pg.K_x:
                     self.IGM.InGameM.toggle()
-                
+
                 if event.key == pg.K_F12:
-                    
+
                     if not self.IsFullscreen:
                         self.Screen = pg.display.set_mode(self.ScreenSize, pg.FULLSCREEN)
                     else: 
                         self.Screen = pg.display.set_mode(self.ScreenSize)
-                    
+
                     self.IsFullscreen = not self.IsFullscreen
-            
+
             # Zoom and dezoom
             if event.type == pg.MOUSEBUTTONDOWN:
                 

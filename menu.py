@@ -7,7 +7,7 @@ class MenuFunction():
 
     # Used only for title screen
     # -----------------------------------
-    def StartNewGame(self):       
+    def StartNewGame(self):
         self.NewGame = True
         self.TitleScreen._enabled = False
 
@@ -17,10 +17,10 @@ class MenuFunction():
         BG = Background
 
         while self.TitleScreen.is_enabled():
-    
+
             events = pg.event.get()
             DirtySurface.blit(BG, (0, 0))
-            
+
             for event in events:
                 if event.type == pg.QUIT:
                     FUNCTION.quit(self)
@@ -28,16 +28,16 @@ class MenuFunction():
                     if event.type == pg.KEYDOWN:
                         if event.key == pg.K_ESCAPE:
                             FUNCTION.quit(self)
-                    
+
                     if event.key == pg.K_F12:
-                    
+
                         if not self.IsFullscreen:
                             self.IsFullscreen = True
                             surface = pg.display.set_mode(ScreenSize, pg.FULLSCREEN)
                         else:
                             self.IsFullscreen = False   
                             surface = pg.display.set_mode(ScreenSize)
-            
+
             self.TitleScreen.draw(DirtySurface)
             self.TitleScreen.update(events)
             pg.transform.smoothscale(DirtySurface, surface.get_size(), surface)
@@ -45,8 +45,6 @@ class MenuFunction():
             pg.display.flip()
     # -----------------------------------
 
-    
-    
     def SaveGame(self):
         print("TODO Save system")
 
@@ -67,20 +65,19 @@ class MenuFunction():
 
     def Inventory(self):
         print("TODO Inventory system")
-    
+
     def MenuEquip(self):
         print("TODO Equipment system")
 
     def MenuStatus(self):
         print("TODO Status profile")
-        
 
 # Need to .toggle then .mainloop(surface)
 class TitleScreenMenu(MenuFunction):
 
     # Create Title
     def __init__(self):
-        
+
         super().__init__()
         self.NewGame = False
         self.IsFullscreen = False
@@ -94,7 +91,7 @@ class TitleScreenMenu(MenuFunction):
             widget_margin = (0, 12)
         )
 
-        self.TitleScreen = pgm.Menu(     
+        self.TitleScreen = pgm.Menu(
         enabled = True,
         height = 400,
         width = 600,
@@ -112,7 +109,7 @@ class TitleScreenMenu(MenuFunction):
 class InGameMenu(MenuFunction):
 
     def __init__(self):
-        
+
         super().__init__()
 
         InGameMenuTheme = pgm.themes.Theme(
@@ -126,7 +123,7 @@ class InGameMenu(MenuFunction):
             title_font_size = 1
         )
 
-        self.InGameM = pgm.Menu(     
+        self.InGameM = pgm.Menu(
         enabled = False,
         height = 512,
         width = 320,
@@ -144,9 +141,4 @@ class InGameMenu(MenuFunction):
         self.InGameM.add_button('         Quit         ', self.ExitGame)
 
     def toggle(self, MENU):
-        """
-        Switch between enable and disable.
-
-        :return: None
-        """
         MENU.enabled = not MENU.enabled
