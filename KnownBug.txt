@@ -1,5 +1,6 @@
 Known bug:
 
 - De-Fullscreening put the game's window on the corner
-- You can't go back to the title screen
+- No possible way to go back to the title screen
 - Running to a corner can cause the player to get stuck
+- Menu buttons aren't the same size
