@@ -2,9 +2,7 @@ import os, sys
 import pygame as pg
 import pygame_menu as pgm
 from usefulfunction import FUNCTION
-###############################################
-# Plan to make the menu showed from a function show() rather than directly from the class, will prevent __init__ problem
-###############################################
+
 class MenuFunction():
 
     def __init__(self):
@@ -109,9 +107,6 @@ class MenuFunction():
 
     def MenuOption(self):
         print("TODO option menu")
-
-    def CloseMenu(self):
-        self._enabled = False
 
     def ExitGame(self):
         FUNCTION.quit(self)
@@ -218,7 +213,6 @@ class OptionMenu(MenuFunction):
         menu_position = (50, 50)
         )
 
-        # music / sfx / display / zoom / always sprint / Auto save
         self.Menu.add_button('Back', pgm.events.BACK)
         self.Menu.add_selector('Music Volume', [("0", 0), ("5", 0.5), ("10", 0.1)])
         self.Menu.add_selector('SFX Volume', [("0", 0), ("5", 0.5), ("10", 0.1)])
