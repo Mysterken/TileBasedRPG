@@ -127,7 +127,6 @@ class Player(pg.sprite.Sprite):
         if self.counter > AnimationSpeed:
             self.counter = 0
 
-        # self.image = pg.image.load(os.path.join('img', 'OldSpriteMethod', 'Male'+self.Facing+anim+'.png')).convert_alpha()
         self.SpriteArea = AreaToDraw(self.Facing, anim)
         self.image = pg.image.load(os.path.join('img', 'DefaultMale.png')).convert_alpha()
         self.image = self.image.subsurface(pg.Rect(self.SpriteArea[0], self.SpriteArea[1], TILESIZE, TILESIZE))
