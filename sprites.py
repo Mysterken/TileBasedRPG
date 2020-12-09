@@ -8,7 +8,8 @@ class Player(pg.sprite.Sprite):
     def __init__(self):
 
         pg.sprite.Sprite.__init__(self)
-        self.image = pg.image.load(os.path.join('img', 'MaleDownStill.png')).convert_alpha()
+        self.image = pg.image.load(os.path.join('img', 'DefaultMale.png')).convert_alpha()
+        self.image = self.image.subsurface(pg.Rect(TILESIZE, 0, TILESIZE, TILESIZE))
         self.rect = self.image.get_rect()
         self.velocity = 1
         self._position = [0, 0]
@@ -80,6 +81,23 @@ class Player(pg.sprite.Sprite):
     # Change player's animation depending on direction
     def animation(self, direction):
     
+        def AreaToDraw(facing, anim):
+            
+            offset = TILESIZE
+            List = ['Down', 'Left', 'Right', 'Up']
+
+            for direction in List:
+                if facing == direction:
+                    ID = List.index(direction)
+                    break
+
+            if anim == 'Move1':
+                offset -= TILESIZE
+            elif anim == 'Move2':
+                offset += TILESIZE
+            Area = [offset, ID*TILESIZE]
+            return Area
+
         # Counter for animation, change animation speed in settings (CounterMax)
         self.counter += 1
         AnimationSpeed = CounterMax
@@ -109,4 +127,6 @@ class Player(pg.sprite.Sprite):
         if self.counter > AnimationSpeed:
             self.counter = 0
 
-        self.image = pg.image.load(os.path.join('img', 'Male'+self.Facing+anim+'.png')).convert_alpha()
+        self.SpriteArea = AreaToDraw(self.Facing, anim)
+        self.image = pg.image.load(os.path.join('img', 'DefaultMale.png')).convert_alpha()
+        self.image = self.image.subsurface(pg.Rect(self.SpriteArea[0], self.SpriteArea[1], TILESIZE, TILESIZE))
