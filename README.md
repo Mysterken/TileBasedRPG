@@ -4,7 +4,7 @@ This is my project of a tile based rpg written in python.
 Launch **Game.py** to play the game.  
 For now you'll probably also have to download the libraries.
 
-### Library used:
+### Library and programs used:
 
 - [pygame](https://www.pygame.org/news)  
 - [Tiled](https://www.mapeditor.org/)  
