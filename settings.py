@@ -8,4 +8,4 @@ FPS = 60
 TITLE = "Mysterken's Game"
 
 TILESIZE = 32
-CounterMax = 40
+ANIMATION_SPEED = 40

@@ -17,16 +17,17 @@ class Game:
 
         # Set the display
         self.FPSCap = pg.time.Clock()
-        self.ScreenSize = [WIDTH, HEIGHT]
-        self.Screen = pg.display.set_mode(self.ScreenSize)
-        self.DirtyScreen = self.Screen.copy()
-        self.IsFullscreen = False
+        self.screen_size = [WIDTH, HEIGHT]
+        self.screen = pg.display.set_mode(self.screen_size)
+        self.dirty_screen = self.screen.copy()
+        self.fullscreen_enabled = False
         self.Font = pg.font.Font(os.path.join('Font', 'Roboto-Regular.ttf'), 30)
         self.MF = MenuFunction()
+        self.IGM = InGameMenu(self)
         self.FCT = FUNCTION()
-        self.ActionPaused = False
-        self.GamePaused = False
-        self.InDialog = False
+        self.action_pause = False
+        self.menu_pause = False
+        self.dialog_enabled = False
 
         # To delete later, just for testing purpose in the status menu
         self.name = "Dummy name"
@@ -37,28 +38,25 @@ class Game:
     def new(self):
 
         # Choose a map for new game and load it
-        self.MapChosen = "Map1.tmx"
-        self.LoadData(self.MapChosen)
+        self.NG_map = "Map1.tmx"
+        self.load_map(self.NG_map)
 
         self.player = Player()
 
         # Set player's spawn position
-        self.player._position = self.SpawnPoint
+        self.player._position = self.spawn_point
 
         # Add player to the group
-        self.group.add(self.player)
-
-        # In-game menu class
-        self.IGM = InGameMenu(self)
+        self.group.add(self.player)       
 
     # Load given map to display
-    def LoadData(self, MAP):
+    def load_map(self, MAP):
 
         # Load data from pytmx
         self.tmx_data = load_pygame(MAP)
 
-        self.SpawnPoint = self.tmx_data.get_object_by_name("SpawnPoint")
-        self.SpawnPoint = [self.SpawnPoint.x / TILESIZE, self.SpawnPoint.y / TILESIZE]
+        self.spawn_point = self.tmx_data.get_object_by_name("SpawnPoint")
+        self.spawn_point = [self.spawn_point.x / TILESIZE, self.spawn_point.y / TILESIZE]
 
         # Setup level geometry with simple pygame rects, loaded from pytmx, walls are based on "Obstacle" object layer
         self.walls = []
@@ -67,18 +65,18 @@ class Game:
             self.walls.append(pg.Rect(obj.x, obj.y, obj.width, obj.height))
 
         # Setup Interactive object for action
-        self.InteractiveObject, self.IOList = [], []
+        self.interactive_object, self.IO_list = [], []
         self.IObj = self.tmx_data.get_layer_by_name("InteractiveObject")
         for obj in self.IObj:
-            self.InteractiveObject.append([round(obj.x / TILESIZE), round(obj.y / TILESIZE), obj.name, obj.id])
-            self.IOList.append([obj.id, obj.properties.copy()])
+            self.interactive_object.append([round(obj.x / TILESIZE), round(obj.y / TILESIZE), obj.name, obj.id])
+            self.IO_list.append([obj.id, obj.properties.copy()])
 
         # Create new data source for pyscroll
         map_data = pyscroll.data.TiledMapData(self.tmx_data)
 
         # Create the camera by BufferedRenderer class
         self.map_layer = pyscroll.BufferedRenderer(
-            map_data, self.DirtyScreen.get_size(), clamp_camera=True, tall_sprites=1
+            map_data, self.dirty_screen.get_size(), clamp_camera=True, tall_sprites=1
         )
         self.map_layer.zoom = 1.5
 
@@ -103,35 +101,35 @@ class Game:
 
     def events(self):
 
-        self.EventsList = pg.event.get()
+        self.events_list = pg.event.get()
 
         # Catch all events here
-        for event in self.EventsList:
+        for event in self.events_list:
 
             # Quit if:
             if event.type == pg.QUIT:
-                FUNCTION.quit(self)
+                FUNCTION.quit()
             
             if event.type == pg.KEYDOWN:
 
                 if event.key == pg.K_ESCAPE:
-                    FUNCTION.quit(self)
+                    FUNCTION.quit()
 
                 if event.key == pg.K_x:
-                    if not self.ActionPaused:
+                    if not self.action_pause:
                         MenuFunction.toggle(self, self.IGM.Menu)
 
                 if event.key == pg.K_SPACE:
                     if not self.IGM.Menu.is_enabled():
-                        self.FCT.CheckAction(self)
+                        self.FCT.check_action(self)
 
                 if event.key == pg.K_F12:
 
-                    if not self.IsFullscreen:
-                        self.Screen = pg.display.set_mode(self.ScreenSize, pg.FULLSCREEN)
+                    if not self.fullscreen_enabled:
+                        self.screen = pg.display.set_mode(self.screen_size, pg.FULLSCREEN)
                     else: 
-                        self.Screen = pg.display.set_mode(self.ScreenSize)
-                    self.IsFullscreen = not self.IsFullscreen
+                        self.screen = pg.display.set_mode(self.screen_size)
+                    self.fullscreen_enabled = not self.fullscreen_enabled
 
             # Zoom and dezoom
             if event.type == pg.MOUSEBUTTONDOWN:
@@ -144,17 +142,17 @@ class Game:
     def update(self, dt):
 
         # If the In-game menu is enabled don't update the game, only the menu
-        if self.GamePaused:
-            self.IGM.Menu.update(self.EventsList)
+        if self.menu_pause:
+            self.IGM.Menu.update(self.events_list)
             return
 
         # Tasks that occur over time are handled here
         self.group.update(dt)
 
         # If an action is in place don't update player movement
-        if not self.ActionPaused:
+        if not self.action_pause:
             # Move player while taking in account collision
-            FUNCTION.UpdateAndCollision(self)
+            FUNCTION.collision_update(self)
 
     def draw(self):
 
@@ -162,40 +160,40 @@ class Game:
         self.group.center(self.player.rect.center)
 
         # Draw the map and all sprites
-        self.group.draw(self.DirtyScreen)
+        self.group.draw(self.dirty_screen)
 
         # If an action is in place
-        if self.ActionPaused:
+        if self.action_pause:
 
             # Draw dialog box
-            if self.InDialog:
+            if self.dialog_enabled:
 
-                self.DirtyScreen.blit(self.FCT.BOX, (11.5, 438.5))
-                self.DirtyScreen.blit(self.FCT.NPCFace, (33, 461))
-                self.DirtyScreen.blit(self.FCT.NPCName, (200, 450))
+                self.dirty_screen.blit(self.FCT.box, (11.5, 438.5))
+                self.dirty_screen.blit(self.FCT.NPC_face, (33, 461))
+                self.dirty_screen.blit(self.FCT.NPC_name, (200, 450))
 
                 YPosition = 455
 
-                for line in self.FCT.Dialog[self.FCT.CurrentPage-1]:
+                for line in self.FCT.dialog[self.FCT.current_page-1]:
                     YPosition += 35
-                    self.DirtyScreen.blit(line, (200, YPosition))
+                    self.dirty_screen.blit(line, (200, YPosition))
 
 
         # Darken the screen and display the menu
         elif self.IGM.Menu.is_enabled():
 
-            darken = pg.Surface(self.ScreenSize)
+            darken = pg.Surface(self.screen_size)
             darken.set_alpha(130)
             darken.fill((0,0,0))
 
-            self.DirtyScreen.blit(darken, (0,0))
-            self.IGM.Menu.draw(self.DirtyScreen)
+            self.dirty_screen.blit(darken, (0,0))
+            self.IGM.Menu.draw(self.dirty_screen)
 
-        # Draw screen from the DirtyScreen and scale if Fullscreen
-        if self.IsFullscreen:
-            pg.transform.smoothscale(self.DirtyScreen, self.Screen.get_size(), self.Screen)
+        # Draw screen from the dirty_screen and scale if Fullscreen
+        if self.fullscreen_enabled:
+            pg.transform.smoothscale(self.dirty_screen, self.screen.get_size(), self.screen)
         else:
-            self.Screen.blit(self.DirtyScreen, (0, 0))
+            self.screen.blit(self.dirty_screen, (0, 0))
 
 # Initiate pygame
 pg.init()
@@ -203,12 +201,12 @@ pg.init()
 # Run the game
 g = Game()
 
-# Title screen launch and import NewGame state
+# Title screen launch and import new_game state
 TS = TitleScreenMenu(g)
-TS.ShowTS(g.Screen, g.DirtyScreen, g.ScreenSize)
+TS.show_title_screen(g.screen, g.dirty_screen, g.screen_size)
 
 # If a new game is launched set everythings
-if TS.NewGame:
+if TS.new_game:
     g.new()
 
 while True:

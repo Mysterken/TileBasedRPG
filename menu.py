@@ -1,4 +1,5 @@
-import os, sys
+import os
+import sys
 import pygame as pg
 import pygame_menu as pgm
 from usefulfunction import FUNCTION
@@ -7,7 +8,7 @@ class MenuFunction():
 
     def __init__(self):
 
-        self.ThemeTemplate = pgm.themes.Theme(
+        self.theme_template = pgm.themes.Theme(
                 background_color = (64, 64, 64, 200),
                 menubar_close_button = False,
                 title_bar_style = pgm.widgets.MENUBAR_STYLE_NONE,
@@ -20,66 +21,65 @@ class MenuFunction():
     # Used only for title screen
     # -----------------------------------
     
-    def StartNewGame(self):
-        self.NewGame = True
-        self.TitleScreen._enabled = False
+    def start_new_game(self):
+        self.new_game = True
+        self.title_screen._enabled = False
 
-    def ShowTS(self, surface, DirtySurface, ScreenSize):
+    def show_title_screen(self, surface, dirty_surface, screen_size):
 
-        Background = pg.image.load(os.path.join('img', 'FieldBG.jpg')).convert_alpha()
-        BG = Background
+        background = pg.image.load(os.path.join('img', 'FieldBG.jpg')).convert_alpha()
 
-        while self.TitleScreen.is_enabled():
+        while self.title_screen.is_enabled():
 
             events = pg.event.get()
-            DirtySurface.blit(BG, (0, 0))
+            dirty_surface.blit(background, (0, 0))
 
             for event in events:
                 if event.type == pg.QUIT:
-                    FUNCTION.quit(self)
+                    FUNCTION.quit()
                 if event.type == pg.KEYDOWN:
                     if event.type == pg.KEYDOWN:
                         if event.key == pg.K_ESCAPE:
-                            FUNCTION.quit(self)
+                            FUNCTION.quit()
 
                     if event.key == pg.K_F12:
 
-                        if not self.IsFullscreen:
-                            self.IsFullscreen = True
-                            surface = pg.display.set_mode(ScreenSize, pg.FULLSCREEN)
+                        if not self.fullscreen_enabled:
+                            self.fullscreen_enabled = True
+                            surface = pg.display.set_mode(screen_size, pg.FULLSCREEN)
                         else:
-                            self.IsFullscreen = False   
-                            surface = pg.display.set_mode(ScreenSize)
+                            self.fullscreen_enabled = False   
+                            surface = pg.display.set_mode(screen_size)
 
-            self.TitleScreen.draw(DirtySurface)
-            self.TitleScreen.update(events)
-            pg.transform.smoothscale(DirtySurface, surface.get_size(), surface)
+            self.title_screen.draw(dirty_surface)
+            self.title_screen.update(events)
+            pg.transform.smoothscale(dirty_surface, surface.get_size(), surface)
 
             pg.display.flip()
     # -----------------------------------
     
-    def toggle(self, MENU):
+    def toggle(self, menu):
         
         # Reset menu to close sub-menu
-        if MENU.is_enabled():
-            MENU.full_reset()
+        if menu.is_enabled():
+            menu.full_reset()
         
-        self.GamePaused = not self.GamePaused
-        MENU.toggle()
+        self.menu_pause = not self.menu_pause
+        menu.toggle()
 
     # Reset status menu to update value
-    def ShowStatus(self):
+    def show_status_menu(self):
 
         # Remove widget from the menu
         self.StatusMenu.Menu.clear()
 
         # Fetch data
-        self.StatusMenu.NAME = self.StatusMenu.GAME.name
+        self.StatusMenu.player_name = self.StatusMenu.GAME.name
         self.StatusMenu.position = str(self.GAME.player.position[0])
 
         # Create widget with updated data
         self.StatusMenu.Menu.add_button('Back', pgm.events.BACK)
-        self.StatusMenu.Menu.add_label(self.StatusMenu.NAME)
+        self.StatusMenu.Menu.add_label(self.StatusMenu.player_name)
         self.StatusMenu.Menu.add_label(self.StatusMenu.position)
 
         self.Menu._open(self.StatusMenu.Menu)
@@ -89,7 +89,7 @@ class MenuFunction():
         self.DialogBox = DialogBox()
 
         # Fetch data
-        self.DialogBox.NAME = NPCName
+        self.DialogBox.player_name = NPCName
 
         if IsRandom:
             self.Dialogue = Dialogue
@@ -109,7 +109,7 @@ class MenuFunction():
         print("TODO option menu")
 
     def ExitGame(self):
-        FUNCTION.quit(self)
+        FUNCTION.quit()
 
     def About(self):
         print("TODO about section with information on the game, the creator and library used")
@@ -131,20 +131,20 @@ class TitleScreenMenu(MenuFunction):
 
         super().__init__()
 
-        self.NewGame = False
-        self.IsFullscreen = False
+        self.new_game = False
+        self.fullscreen_enabled = False
 
-        TitleScreenTheme = self.ThemeTemplate.copy()
-        TitleScreenTheme.background_color = (0, 0, 0, 0)
-        TitleScreenTheme.widget_background_color = (38, 38, 38, 180)
-        TitleScreenTheme.widget_margin = (0, 12)
+        title_screenTheme = self.theme_template.copy()
+        title_screenTheme.background_color = (0, 0, 0, 0)
+        title_screenTheme.widget_background_color = (38, 38, 38, 180)
+        title_screenTheme.widget_margin = (0, 12)
 
-        self.TitleScreen = pgm.Menu(
+        self.title_screen = pgm.Menu(
         enabled = True,
         height = 400,
         width = 600,
         onclose = pgm.events.EXIT,
-        theme = TitleScreenTheme,
+        theme = title_screenTheme,
         title = '',
         menu_position = (50, 100)
         )
@@ -152,11 +152,11 @@ class TitleScreenMenu(MenuFunction):
         # Initiate sub-menu class
         self.OptionMenu = OptionMenu()
 
-        self.TitleScreen.add_button('Start new game', self.StartNewGame)
-        self.TitleScreen.add_button('     Load Save     ', self.LoadSave)
-        self.TitleScreen.add_button('        Option        ', self.OptionMenu.Menu)
-        self.TitleScreen.add_button('         About         ', self.About)
-        self.TitleScreen.add_button('           Exit           ', self.ExitGame)
+        self.title_screen.add_button('Start new game', self.start_new_game)
+        self.title_screen.add_button('     Load Save     ', self.LoadSave)
+        self.title_screen.add_button('        Option        ', self.OptionMenu.Menu)
+        self.title_screen.add_button('         About         ', self.About)
+        self.title_screen.add_button('           Exit           ', self.ExitGame)
 
 class InGameMenu(MenuFunction):
 
@@ -164,7 +164,7 @@ class InGameMenu(MenuFunction):
 
         super().__init__()
 
-        InGameMenuTheme = self.ThemeTemplate.copy()
+        InGameMenuTheme = self.theme_template.copy()
         InGameMenuTheme.widget_font_size = 35
         InGameMenuTheme.widget_margin = (0, 15)
         InGameMenuTheme.title_font_size = 1
@@ -184,7 +184,7 @@ class InGameMenu(MenuFunction):
 
         self.Menu.add_button('         Item         ', self.Inventory)
         self.Menu.add_button('        Equip        ', self.MenuEquip)
-        self.Menu.add_button('       Status       ', self.ShowStatus)
+        self.Menu.add_button('       Status       ', self.show_status_menu)
         self.Menu.add_button('       Option       ', self.OptionMenu.Menu)
         self.Menu.add_button('         Save         ', self.SaveGame)
         self.Menu.add_button('         Load         ', self.LoadSave)
@@ -196,7 +196,7 @@ class OptionMenu(MenuFunction):
 
         super().__init__()
 
-        OptionMenuTheme = self.ThemeTemplate.copy()
+        OptionMenuTheme = self.theme_template.copy()
         OptionMenuTheme.widget_font_size = 35
         OptionMenuTheme.widget_margin = (0, 25)
         OptionMenuTheme.title_background_color = (0, 0, 0, 100)
@@ -227,7 +227,7 @@ class StatusMenu(MenuFunction):
 
         super().__init__()
 
-        StatusMenuTheme = self.ThemeTemplate.copy()
+        StatusMenuTheme = self.theme_template.copy()
 
         self.Menu = pgm.Menu(
         enabled = False,
@@ -246,7 +246,7 @@ class InventoryMenu(MenuFunction):
 
         super().__init__()
 
-        InventoryMenuTheme = self.ThemeTemplate.copy()
+        InventoryMenuTheme = self.theme_template.copy()
 
         self.Menu = pgm.Menu(
         enabled = False,
