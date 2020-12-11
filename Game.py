@@ -6,7 +6,7 @@ import pyscroll, pyscroll.data
 from menu import MenuFunction, TitleScreenMenu, InGameMenu
 from pyscroll.group import PyscrollGroup
 from sprites import Player
-from pygame.locals import *
+# from pygame.locals import *
 from settings import WIDTH, HEIGHT, FPS, TITLE, TILESIZE
 from pytmx.util_pygame import load_pygame
 from usefulfunction import FUNCTION
@@ -174,11 +174,11 @@ class Game:
                 self.DirtyScreen.blit(self.FCT.NPCFace, (33, 461))
                 self.DirtyScreen.blit(self.FCT.NPCName, (200, 450))
 
-                DPosition = 450
+                YPosition = 455
 
                 for line in self.FCT.Dialog[self.FCT.CurrentPage-1]:
-                    DPosition += 30
-                    self.DirtyScreen.blit(line, (200, DPosition))
+                    YPosition += 35
+                    self.DirtyScreen.blit(line, (200, YPosition))
 
 
         # Darken the screen and display the menu

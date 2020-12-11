@@ -1,4 +1,5 @@
 {
     "BobDialogue": ["Hello i'm Bob!\nI am a farmer.", 5, 
-                    "I am in pain...", 4]
+                    "I am in pain...\nAAaaaAAAaAAaA", 4,
+                    "What's his deal?\nBetter get away quickly...", "DefaultPlayerFace4"]
 }

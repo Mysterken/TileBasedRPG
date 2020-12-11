@@ -75,7 +75,7 @@ class MenuFunction():
 
         # Fetch data
         self.StatusMenu.NAME = self.StatusMenu.GAME.name
-        self.StatusMenu.position = str(self.GAME.player._position[0])
+        self.StatusMenu.position = str(self.GAME.player.position[0])
 
         # Create widget with updated data
         self.StatusMenu.Menu.add_button('Back', pgm.events.BACK)
@@ -213,6 +213,7 @@ class OptionMenu(MenuFunction):
         menu_position = (50, 50)
         )
 
+        # music / sfx / display / zoom / always sprint / Auto save
         self.Menu.add_button('Back', pgm.events.BACK)
         self.Menu.add_selector('Music Volume', [("0", 0), ("5", 0.5), ("10", 0.1)])
         self.Menu.add_selector('SFX Volume', [("0", 0), ("5", 0.5), ("10", 0.1)])
@@ -239,19 +240,19 @@ class StatusMenu(MenuFunction):
 
         self.GAME = GAME
 
-class DialogBox(MenuFunction):
+class InventoryMenu(MenuFunction):
 
-    def __init__(self):
+    def __init__(self, GAME):
 
         super().__init__()
 
-        DialogBoxTheme = self.ThemeTemplate.copy()
+        InventoryMenuTheme = self.ThemeTemplate.copy()
 
         self.Menu = pgm.Menu(
         enabled = False,
-        height = 640,
-        width = 266,
-        theme = DialogBoxTheme,
+        height = 512,
+        width = 703,
+        theme = InventoryMenuTheme,
         title = '',
-        menu_position = (100, 50)
+        menu_position = (50, 50)
         )

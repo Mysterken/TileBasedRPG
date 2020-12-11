@@ -8,7 +8,7 @@ class Player(pg.sprite.Sprite):
     def __init__(self):
 
         pg.sprite.Sprite.__init__(self)
-        self.image = pg.image.load(os.path.join('img', 'DefaultMale.png')).convert_alpha()
+        self.image = pg.image.load(os.path.join('img', 'DefaultPlayer.png')).convert_alpha()
         self.image = self.image.subsurface(pg.Rect(TILESIZE, 0, TILESIZE, TILESIZE))
         self.rect = self.image.get_rect()
         self.velocity = 1
@@ -95,6 +95,7 @@ class Player(pg.sprite.Sprite):
                 offset -= TILESIZE
             elif anim == 'Move2':
                 offset += TILESIZE
+                
             Area = [offset, ID*TILESIZE]
             return Area
 
@@ -128,5 +129,5 @@ class Player(pg.sprite.Sprite):
             self.counter = 0
 
         self.SpriteArea = AreaToDraw(self.Facing, anim)
-        self.image = pg.image.load(os.path.join('img', 'DefaultMale.png')).convert_alpha()
+        self.image = pg.image.load(os.path.join('img', 'DefaultPlayer.png')).convert_alpha()
         self.image = self.image.subsurface(pg.Rect(self.SpriteArea[0], self.SpriteArea[1], TILESIZE, TILESIZE))
