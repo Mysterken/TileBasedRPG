@@ -11,7 +11,7 @@ from settings import WIDTH, HEIGHT, FPS, TITLE, TILESIZE
 from pytmx.util_pygame import load_pygame
 from usefulfunction import FUNCTION
 
-class Game:
+class Game(FUNCTION):
 
     def __init__(self):
 
@@ -24,7 +24,7 @@ class Game:
         self.Font = pg.font.Font(os.path.join('Font', 'Roboto-Regular.ttf'), 30)
         self.MF = MenuFunction()
         self.IGM = InGameMenu(self)
-        self.FCT = FUNCTION()
+        # self.FCT = FUNCTION()
         self.action_pause = False
         self.menu_pause = False
         self.dialog_enabled = False
@@ -121,7 +121,7 @@ class Game:
 
                 if event.key == pg.K_SPACE:
                     if not self.IGM.Menu.is_enabled():
-                        self.FCT.check_action(self)
+                        self.check_action()
 
                 if event.key == pg.K_F12:
 
@@ -152,7 +152,7 @@ class Game:
         # If an action is in place don't update player movement
         if not self.action_pause:
             # Move player while taking in account collision
-            FUNCTION.collision_update(self)
+            self.collision_update()
 
     def draw(self):
 
@@ -168,15 +168,21 @@ class Game:
             # Draw dialog box
             if self.dialog_enabled:
 
-                self.dirty_screen.blit(self.FCT.box, (11.5, 438.5))
-                self.dirty_screen.blit(self.FCT.NPC_face, (33, 461))
-                self.dirty_screen.blit(self.FCT.NPC_name, (200, 450))
+                self.dirty_screen.blit(self.box, (11.5, 438.5))
 
-                YPosition = 455
+                # Text position according to if it's 'only_text' or not
+                text_position = [200, 455] if not self.only_text else [50, 440]
 
-                for line in self.FCT.dialog[self.FCT.current_page-1]:
-                    YPosition += 35
-                    self.dirty_screen.blit(line, (200, YPosition))
+                # Draw each line under the previous one
+                for line in self.dialog[self.current_page-1]:
+                    text_position[1] += 35
+                    self.dirty_screen.blit(line, text_position)
+
+                # Add face image and name to the box if it's an NPC dialogue and not 'only_text'
+                if self.NPC_dialogue and not self.only_text:
+                    
+                    self.dirty_screen.blit(self.NPC_face, (33, 461))
+                    self.dirty_screen.blit(self.NPC_name, (200, 450))
 
 
         # Darken the screen and display the menu
