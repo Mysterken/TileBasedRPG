@@ -84,21 +84,9 @@ class MenuFunction():
 
         self.Menu._open(self.StatusMenu.Menu)
 
-    def ShowDB(self, NPCName, IsRandom, Dialogue):
+    def show_inventory_menu(self):
+        pass
 
-        self.DialogBox = DialogBox()
-
-        # Fetch data
-        self.DialogBox.player_name = NPCName
-
-        if IsRandom:
-            self.Dialogue = Dialogue
-        else:
-            for text in Dialogue:
-                pass
-
-        self.Menu._open(self.StatusMenu.Menu)
-    
     def SaveGame(self):
         print("TODO Save system")
 

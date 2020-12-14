@@ -5,7 +5,7 @@ import pygame as pg
 from settings import TILESIZE
 
 # Various useful function, call from here, better code visibility in other file
-class FUNCTION():
+class FUNCTION:
 
     @staticmethod
     def quit():
@@ -33,85 +33,110 @@ class FUNCTION():
         self.player.position_update(ToChangeList)
 
     # Called to check if an action should occur after pressing spacebar
-    def check_action(self, GAME):
+    def check_action(self):
 
         # Create coordinate depending on player's facing side
-        if GAME.player.facing == "Up":
-            direction_to_check = [round(GAME.player.position[0]), round(GAME.player.position[1] - 1)]
-        elif GAME.player.facing == "Down":
-            direction_to_check = [round(GAME.player.position[0]), round(GAME.player.position[1] + 1)]
-        elif GAME.player.facing == "Left":
-            direction_to_check = [round(GAME.player.position[0] - 1), round(GAME.player.position[1])]
-        elif GAME.player.facing == "Right":
-            direction_to_check = [round(GAME.player.position[0] + 1), round(GAME.player.position[1])]
+        if self.player.facing == "Up":
+            direction_to_check = [round(self.player.position[0]), round(self.player.position[1] - 1)]
+        elif self.player.facing == "Down":
+            direction_to_check = [round(self.player.position[0]), round(self.player.position[1] + 1)]
+        elif self.player.facing == "Left":
+            direction_to_check = [round(self.player.position[0] - 1), round(self.player.position[1])]
+        elif self.player.facing == "Right":
+            direction_to_check = [round(self.player.position[0] + 1), round(self.player.position[1])]
 
         # If the direction to check has an object to it's coordinate: do action based on the object name
-        for IO in GAME.interactive_object:
+        for IO in self.interactive_object:
             if direction_to_check == [IO[0], IO[1]]:
                 
                 # If the object is an NPC
                 if IO[2] == "NPC":
-                    for obj in GAME.IO_list:
+                    for obj in self.IO_list:
                         if IO[3] == obj[0]:
-                            FUNCTION.show_dialog(self, GAME, obj, True)
+                            FUNCTION.show_dialog(self, obj, True)
                             return
                 # If the object is a Props => WIP
                 elif IO[2] == "Props":
-                    for obj in GAME.IO_list:
+                    for obj in self.IO_list:
                         if IO[3] == obj[0]:
-                            FUNCTION.show_dialog(self, GAME, obj)
+                            FUNCTION.show_dialog(self, obj)
                             return
 
     # Manage NPC scripted dialogue
-    def show_dialog(self, GAME, obj, type_NPC=False):
+    def show_dialog(self, obj, type_NPC=False):
 
         # If not in dialogue reset and fetch dialog data
-        if not GAME.dialog_enabled:
+        if not self.dialog_enabled:
 
             self.page_count = 0
             self.current_page = 0
+            self.NPC_dialogue = type_NPC
 
-            GAME.dialog_enabled = True
-            GAME.action_pause = True
+            self.dialog_enabled = True
+            self.action_pause = True
 
             self.box = pg.image.load(os.path.join('img', 'DialogBox.png')).convert_alpha()
             self.box.set_alpha(235)
             
-            with open("NPCDialogFile.json") as Text:
-                self.text = json.load(Text)
+            # Open appropriate json file depending on the type of object
+            if type_NPC:
+                with open("NPCDialogFile.json") as Text:
+                    self.text = json.load(Text)
+            else:
+                with open("PropsDescriptionFile.json") as Text:
+                    self.text = json.load(Text)
+
+            incrementation = 2 if type_NPC else 1
 
             self.name_font = pg.font.Font(os.path.join('Font', 'Roboto-Regular.ttf'), 25)
-
             self.dialog = []
         
-            # Create Dialogue data, new line, page counter
-            for i in range(0, len(self.text[(obj[1]["Dialogue"])]), 2):
+            # Create Dialogue data, new line, page counter from the json
+            for i in range(0, len(self.text[(obj[1]["Dialogue"])]), incrementation):
                 List = []
                 Dialog = (self.text[(obj[1]["Dialogue"])][i]).rsplit('\n')
                 for line in Dialog:
-                    List.append(GAME.Font.render(line, True, (255, 255, 255)))
+                    List.append(self.Font.render(line, True, (255, 255, 255)))
                 self.dialog.append(List)
                 self.page_count += 1
             self.current_page += 1
 
             if type_NPC:
+
+                if self.text[(obj[1]["Dialogue"])][1] == "desc":
+                    self.only_text = True
+                    return
+
                 self.NPC_name = self.name_font.render((obj[1]["NPCName"])+':', True, (200, 200, 200))
                 self.NPC_face = FUNCTION.get_face_expression(self, obj[1]["Face"], self.text[obj[1]["Dialogue"]][1])
+            else:
+                self.only_text = True
         
         # If in dialogue either go to next page or end it
         else:
 
+            self.only_text = False
+
             if self.current_page >= self.page_count:
-                GAME.dialog_enabled = False
-                GAME.action_pause = False
+                self.dialog_enabled = False
+                self.action_pause = False
                 return
 
             self.current_page += 1
-            self.NPC_face = FUNCTION.get_face_expression(self, obj[1]["Face"], self.text[obj[1]["Dialogue"]][self.current_page*2-1])
+
+            if self.NPC_dialogue:
+
+                if self.text[obj[1]["Dialogue"]][self.current_page*2-1] == "desc":
+                    self.only_text = True
+                    return
+
+                self.NPC_face = FUNCTION.get_face_expression(self, obj[1]["Face"], self.text[obj[1]["Dialogue"]][self.current_page*2-1])
+            else:
+                self.only_text = True
 
             if isinstance(self.text[obj[1]["Dialogue"]][self.current_page*2-1], int):
                 self.NPC_name = self.name_font.render((obj[1]["NPCName"])+':', True, (200, 200, 200))
-            else:
+            else:            
                 self.NPC_name = self.name_font.render((self.text[obj[1]["Dialogue"]][self.current_page*2-1][:-5])+':', True, (200, 200, 200))
 
     # Fetch face expression in NPCDialogFile.json
