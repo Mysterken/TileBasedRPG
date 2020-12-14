@@ -124,20 +124,21 @@ class FUNCTION:
 
             self.current_page += 1
 
+            # Check if need to display face and name (It's a dialogue, not only_text)
             if self.NPC_dialogue:
 
                 if self.text[obj[1]["Dialogue"]][self.current_page*2-1] == "desc":
                     self.only_text = True
                     return
 
+                if isinstance(self.text[obj[1]["Dialogue"]][self.current_page*2-1], int):
+                    self.NPC_name = self.name_font.render((obj[1]["NPCName"])+':', True, (200, 200, 200))
+                else:
+                    self.NPC_name = self.name_font.render((self.text[obj[1]["Dialogue"]][self.current_page*2-1][:-5])+':', True, (200, 200, 200))
+
                 self.NPC_face = FUNCTION.get_face_expression(self, obj[1]["Face"], self.text[obj[1]["Dialogue"]][self.current_page*2-1])
             else:
                 self.only_text = True
-
-            if isinstance(self.text[obj[1]["Dialogue"]][self.current_page*2-1], int):
-                self.NPC_name = self.name_font.render((obj[1]["NPCName"])+':', True, (200, 200, 200))
-            else:            
-                self.NPC_name = self.name_font.render((self.text[obj[1]["Dialogue"]][self.current_page*2-1][:-5])+':', True, (200, 200, 200))
 
     # Fetch face expression in NPCDialogFile.json
     def get_face_expression(self, faceSheet, expression):
