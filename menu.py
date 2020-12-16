@@ -4,7 +4,7 @@ import pygame as pg
 import pygame_menu as pgm
 from usefulfunction import FUNCTION
 
-class MenuFunction():
+class MenuFunction:
 
     def __init__(self):
 
@@ -85,16 +85,26 @@ class MenuFunction():
         self.Menu._open(self.StatusMenu.Menu)
 
     def show_inventory_menu(self):
-        pass
+       
+        self.InventoryMenu.Menu.clear()
+
+        # Adjust row count to fit items
+        item_count = len(self.InventoryMenu.GAME.inventory.content)
+        if item_count % 2 != 0:
+            item_count += 1
+        self.InventoryMenu.Menu._rows = round(item_count/2)
+
+        # Add items to the Menu
+        for item in self.InventoryMenu.GAME.inventory.content:
+            self.InventoryMenu.Menu.add_button(item+'                               ', self.Inventory)
+
+        self.Menu._open(self.InventoryMenu.Menu)
 
     def SaveGame(self):
         print("TODO Save system")
 
     def LoadSave(self):
         print("TODO continue playing by loading a save")
-
-    def MenuOption(self):
-        print("TODO option menu")
 
     def ExitGame(self):
         FUNCTION.quit()
@@ -125,7 +135,7 @@ class TitleScreenMenu(MenuFunction):
         title_screenTheme = self.theme_template.copy()
         title_screenTheme.background_color = (0, 0, 0, 0)
         title_screenTheme.widget_background_color = (38, 38, 38, 180)
-        title_screenTheme.widget_margin = (0, 12)
+        title_screenTheme.widget_margin = (12, 12)
 
         self.title_screen = pgm.Menu(
         enabled = True,
@@ -169,8 +179,9 @@ class InGameMenu(MenuFunction):
         self.GAME = GAME
         self.OptionMenu = OptionMenu()
         self.StatusMenu = StatusMenu(GAME)
+        self.InventoryMenu = InventoryMenu(GAME)
 
-        self.Menu.add_button('         Item         ', self.Inventory)
+        self.Menu.add_button('         Item         ', self.show_inventory_menu)
         self.Menu.add_button('        Equip        ', self.MenuEquip)
         self.Menu.add_button('       Status       ', self.show_status_menu)
         self.Menu.add_button('       Option       ', self.OptionMenu.Menu)
@@ -235,12 +246,20 @@ class InventoryMenu(MenuFunction):
         super().__init__()
 
         InventoryMenuTheme = self.theme_template.copy()
+        InventoryMenuTheme.widget_margin = (0, 15)
+        InventoryMenuTheme.widget_alignment = pgm.locals.ALIGN_LEFT
+        InventoryMenuTheme.widget_offset = (15, 0)
+        InventoryMenuTheme.title_bar_style = pgm.widgets.MENUBAR_STYLE_ADAPTIVE
 
         self.Menu = pgm.Menu(
         enabled = False,
         height = 512,
         width = 703,
+        columns = 2,
+        rows = 1,
         theme = InventoryMenuTheme,
         title = '',
         menu_position = (50, 50)
         )
+
+        self.GAME = GAME

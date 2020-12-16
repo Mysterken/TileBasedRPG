@@ -47,7 +47,7 @@ class FUNCTION:
 
         # If the direction to check has an object to it's coordinate: do action based on the object name
         for IO in self.interactive_object:
-            if direction_to_check == [IO[0], IO[1]]:
+            if direction_to_check == [IO[0], IO[1]] or self.player.position == [IO[0], IO[1]]:
                 
                 # If the object is an NPC
                 if IO[2] == "NPC":
@@ -100,6 +100,12 @@ class FUNCTION:
                 self.dialog.append(List)
                 self.page_count += 1
             self.current_page += 1
+
+            if "AddItem" in obj[1]:
+                self.inventory.add_item(obj[1]["AddItem"])
+
+            if "RemoveItem" in obj[1]:
+                self.inventory.remove_item(obj[1]["RemoveItem"])
 
             if type_NPC:
 
