@@ -1,3 +1,5 @@
+import math
+
 # Game settings
 
 #Screen size

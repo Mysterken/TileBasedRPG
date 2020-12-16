@@ -1,15 +1,15 @@
-import os, sys
+import os
+import sys
 import pygame as pg
-import tilerender
 import sprites
 import pyscroll, pyscroll.data
 from menu import MenuFunction, TitleScreenMenu, InGameMenu
 from pyscroll.group import PyscrollGroup
 from sprites import Player
-# from pygame.locals import *
 from settings import WIDTH, HEIGHT, FPS, TITLE, TILESIZE
 from pytmx.util_pygame import load_pygame
 from usefulfunction import FUNCTION
+from inventory import Inventory
 
 class Game(FUNCTION):
 
@@ -24,10 +24,10 @@ class Game(FUNCTION):
         self.Font = pg.font.Font(os.path.join('Font', 'Roboto-Regular.ttf'), 30)
         self.MF = MenuFunction()
         self.IGM = InGameMenu(self)
-        # self.FCT = FUNCTION()
         self.action_pause = False
         self.menu_pause = False
         self.dialog_enabled = False
+        self.inventory = Inventory()
 
         # To delete later, just for testing purpose in the status menu
         self.name = "Dummy name"
@@ -38,7 +38,7 @@ class Game(FUNCTION):
     def new(self):
 
         # Choose a map for new game and load it
-        self.NG_map = "Map1.tmx"
+        self.NG_map = os.path.join('map', 'Map1.tmx')
         self.load_map(self.NG_map)
 
         self.player = Player()
@@ -116,6 +116,7 @@ class Game(FUNCTION):
                     FUNCTION.quit()
 
                 if event.key == pg.K_x:
+
                     if not self.action_pause:
                         MenuFunction.toggle(self, self.IGM.Menu)
 
