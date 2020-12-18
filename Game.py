@@ -29,9 +29,6 @@ class Game(FUNCTION):
         self.dialog_enabled = False
         self.inventory = Inventory()
 
-        # To delete later, just for testing purpose in the status menu
-        self.name = "Dummy name"
-
         pg.display.set_caption(TITLE)
 
     # Create a new game
