@@ -16,6 +16,17 @@ class Player(pg.sprite.Sprite):
         self.counter = 0
         self.facing = "Down"
 
+        # Temporary hard coded stats / might change to definable starting stats
+        self.name = "Dummy Name"
+        MAXHP, ATK, DEF, STAM = 25, 5, 5, 5
+        
+        # Stats => HP, ATK, DEF
+        self.MAXHP = MAXHP
+        self.HP = self.MAXHP
+        self.ATK = ATK
+        self.DEF = DEF
+        self.STAM = STAM
+
     @property
     def position(self) -> List[float]:
         return list(self._position)
@@ -23,6 +34,10 @@ class Player(pg.sprite.Sprite):
     @property
     def _rect(self):
         return self.rect
+
+    @property
+    def get_HP(self):
+        return self.HP
 
     # Function assigned to what keys are pressed
     def key_pressed(self):

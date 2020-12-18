@@ -74,13 +74,20 @@ class MenuFunction:
         self.StatusMenu.Menu.clear()
 
         # Fetch data
-        self.StatusMenu.player_name = self.StatusMenu.GAME.name
-        self.StatusMenu.position = str(self.GAME.player.position[0])
+        player_name = self.StatusMenu.GAME.player.name
+        player_maxhp = str(self.StatusMenu.GAME.player.MAXHP)
+        player_hp = str(self.StatusMenu.GAME.player.HP)
+        player_atk = str(self.StatusMenu.GAME.player.ATK)
+        player_def = str(self.StatusMenu.GAME.player.DEF)
+        player_stam = str(self.StatusMenu.GAME.player.STAM)
 
         # Create widget with updated data
         self.StatusMenu.Menu.add_button('Back', pgm.events.BACK)
-        self.StatusMenu.Menu.add_label(self.StatusMenu.player_name)
-        self.StatusMenu.Menu.add_label(self.StatusMenu.position)
+        self.StatusMenu.Menu.add_label(player_name)
+        self.StatusMenu.Menu.add_label(player_maxhp + 'HP / ' + player_hp + 'HP')
+        self.StatusMenu.Menu.add_label("ATK: " + player_atk)
+        self.StatusMenu.Menu.add_label("DEF: " + player_def)
+        self.StatusMenu.Menu.add_label("STAMINA: " + player_stam)
 
         self.Menu._open(self.StatusMenu.Menu)
 
