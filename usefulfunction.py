@@ -93,10 +93,13 @@ class FUNCTION:
         
             # Create Dialogue data, new line, page counter from the json
             for i in range(0, len(self.text[(obj[1]["Dialogue"])]), incrementation):
+
                 List = []
                 Dialog = (self.text[(obj[1]["Dialogue"])][i]).rsplit('\n')
+
                 for line in Dialog:
-                    List.append(self.Font.render(line, True, (255, 255, 255)))
+                    List.append(self.font_render(line))
+                    
                 self.dialog.append(List)
                 self.page_count += 1
             self.current_page += 1
@@ -113,11 +116,11 @@ class FUNCTION:
                     self.only_text = True
                     return
 
-                self.NPC_name = self.name_font.render((obj[1]["NPCName"])+':', True, (200, 200, 200))
+                self.NPC_name = self.font_render((obj[1]["NPCName"])+':', "name")
                 self.NPC_face = FUNCTION.get_face_expression(self, obj[1]["Face"], self.text[obj[1]["Dialogue"]][1])
             else:
                 self.only_text = True
-        
+
         # If in dialogue either go to next page or end it
         else:
 
@@ -138,9 +141,9 @@ class FUNCTION:
                     return
 
                 if isinstance(self.text[obj[1]["Dialogue"]][self.current_page*2-1], int):
-                    self.NPC_name = self.name_font.render((obj[1]["NPCName"])+':', True, (200, 200, 200))
+                    self.NPC_name = self.font_render((obj[1]["NPCName"])+':', "name")
                 else:
-                    self.NPC_name = self.name_font.render((self.text[obj[1]["Dialogue"]][self.current_page*2-1][:-5])+':', True, (200, 200, 200))
+                    self.NPC_name = self.font_render((self.text[obj[1]["Dialogue"]][self.current_page*2-1][:-5])+':', "name")
 
                 self.NPC_face = FUNCTION.get_face_expression(self, obj[1]["Face"], self.text[obj[1]["Dialogue"]][self.current_page*2-1])
             else:
@@ -164,3 +167,19 @@ class FUNCTION:
 
         Face = Face.subsurface(pg.Rect(expression * (size[0]/4), row * (size[1]/2), size[0]/4, size[1]/2))
         return Face
+
+    # Return given item's description
+    def fetch_item_desc(self, item_name):
+
+        with open("ItemDescription.json") as dict:
+            item_dict = json.load(dict)
+
+        return item_dict[item_name]["desc"]
+
+    # convert a string to a pygame text surface
+    def font_render(self, string, font="default", color=(255, 255, 255)):
+
+        if font == "default":
+            return self.Font.render(string, True, color)
+        elif font == "name":
+            return self.name_font.render(string, True, (200, 200, 200))

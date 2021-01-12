@@ -22,14 +22,15 @@ class Game(FUNCTION):
         self.dirty_screen = self.screen.copy()
         self.fullscreen_enabled = False
         self.Font = pg.font.Font(os.path.join('Font', 'Roboto-Regular.ttf'), 30)
+        pg.display.set_caption(TITLE)
+
+        # Set game state
         self.MF = MenuFunction()
         self.IGM = InGameMenu(self)
         self.action_pause = False
         self.menu_pause = False
         self.dialog_enabled = False
         self.inventory = Inventory()
-
-        pg.display.set_caption(TITLE)
 
     # Create a new game
     def new(self):
@@ -84,6 +85,7 @@ class Game(FUNCTION):
 
         while True:
 
+            # Cap the game's FPS
             dt = self.FPSCap.tick(FPS) / 1000
 
             # Event handler
@@ -141,13 +143,15 @@ class Game(FUNCTION):
 
         # If the In-game menu is enabled don't update the game, only the menu
         if self.menu_pause:
+            
+            # Send pygame events to the menu
             self.IGM.Menu.update(self.events_list)
             return
 
         # Tasks that occur over time are handled here
         self.group.update(dt)
 
-        # If an action is in place don't update player movement
+        # If an action is in place freeze the player
         if not self.action_pause:
             # Move player while taking in account collision
             self.collision_update()
@@ -173,6 +177,7 @@ class Game(FUNCTION):
 
                 # Draw each line under the previous one
                 for line in self.dialog[self.current_page-1]:
+                   
                     text_position[1] += 35
                     self.dirty_screen.blit(line, text_position)
 
@@ -192,6 +197,15 @@ class Game(FUNCTION):
 
             self.dirty_screen.blit(darken, (0,0))
             self.IGM.Menu.draw(self.dirty_screen)
+
+            # Draw item's description when the InventoryMenu is toggled
+            if self.IGM.Menu.get_current() == self.IGM.InventoryMenu.Menu:
+                
+                position = [60, 85]
+                for line in self.IGM.InventoryMenu.item_desc():
+                    
+                    self.dirty_screen.blit(line, position)
+                    position[1] += 35
 
         # Draw screen from the dirty_screen and scale if Fullscreen
         if self.fullscreen_enabled:
