@@ -1,7 +1,0 @@
-{
-    "Potion": {
-        "desc": "It's a healing potion, drinking it will replenish\nyour HP!",
-        "type": "heal_item",
-        "heal_amount": 10
-    }
-}
