@@ -5,6 +5,7 @@ CORE FEATURE:
 - Battle => WIP
 - Inventory => done
 - Map warp
+- Rename every instance of "ennemy" to "enemy" because I literally just learnt it's spelt that way.
 
 Additional:
 
