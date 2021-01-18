@@ -11,3 +11,4 @@ Additional:
 - Animation for everything
 - Save / Load => done
 - Write in the README how tmx map files are handled and how to use them with the game.
+- Compile the game as exe file to make the game easier to play.
