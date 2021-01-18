@@ -6,7 +6,7 @@ You can easily do so by [modifying](https://github.com/Mysterken/TileBasedRPG/bl
 
 ### Library and programs used:
 
-- [pygame](https://www.pygame.org/news)   
+- [pygame](https://github.com/pygame/pygame)   
 - [PyTMX](https://github.com/bitcraft/pytmx)  
 - [pyscroll](https://github.com/bitcraft/pyscroll)  
 - [pygame-menu](https://github.com/ppizarror/pygame-menu)  
