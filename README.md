@@ -51,7 +51,7 @@ Other key:
 ### Ennemies
 Stored in `Ennemies.json`.  
 You can modify or create a new one.  
-An ennemy should necessarely have those values:  
+An ennemy should necessarily have those values:  
 ```
 ennemy: {
   "name": string,
@@ -74,3 +74,14 @@ item_drop : string : Item(s) dropped
 gold_drop : int : Amount of gold(s) dropped
 skills_list : [string, string] : string list of ennemy's skill
 ```
+
+### Items
+Stored in `Items.json`.  
+Item should have a `desc` and a `type`.  
+```
+"Item": {
+  "desc": "Here should be written the item's description!",
+  "type": "item_type"
+}
+```
+Only supported type for now is `heal_item` which require an additionnal `heal_amount` key with a int value.
