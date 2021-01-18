@@ -77,8 +77,8 @@ class BattleSystem:
         print(f'{self.fighters[self.turn].name} used {action[0]}!')
         FUNCTION.process(skill, attacker, defender)
         print('----')
-        print(player.HP)
-        print(self.ennemy[0].HP)
+        print(f'player HP is: {player.HP}')
+        print(f'Ennemy HP is: {self.ennemy[0].HP}')
         self.turn += 1
         if self.turn > len(self.fighters)-1:
                 self.turn = 0
