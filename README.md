@@ -85,3 +85,17 @@ Item should have a `desc` and a `type`.
 }
 ```
 Only supported type for now is `heal_item` which require an additionnal `heal_amount` key with a int value.
+
+### NPC dialogue
+Stored in `NPCDialog.json`.  
+Should be written as pair, with the `text` and the `face` see below:
+```
+NPCDialogue: [
+  "Here's what the NPC should say!", "desc",
+  "Hello i'm an NPC.\nHow are you?", 2
+]
+```
+Result in:
+
+The face should either be an integer (0-7) or `"desc"`, passing an integer pick a face from the facesheet 
+to show on the side of the Dialog box while passing `"desc"` don't show the face and act as a description box.  
