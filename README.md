@@ -89,9 +89,9 @@ Only supported type for now is `heal_item` which require an additionnal `heal_am
 
 ### NPC dialogue
 Stored in `NPCDialog.json`.  
-Should be written as pair, with the `text` and the `face` see below:
+Should be written as a list in pair, with the `text` and the `face` see below:
 ```
-NPCDialogue: [
+"NPCDialogue": [
   "Here's what the NPC should say!", "desc",
   "Hello i'm an NPC.\nHow are you?", 2
 ]
@@ -106,7 +106,7 @@ You can also break line with `\n` but keep in mind that no more than 3 line shou
 Stored in `PropsDescription.json`.  
 Act like NPC dialogue but don't accept the `face`, instead just text.
 ```
-PropsDescription: [
+"PropsDescription": [
   "Here is written the description of the props\nHere we break a line.",
   "Here's another page of description."
 ]
@@ -115,3 +115,15 @@ PropsDescription: [
 
 ### Skills
 Stored in `Skills.json`.  
+The skill should have a `desc`, `type` and `stam_consumption`.  
+```
+"Powerful Attack": {
+  "desc": "A powerful blow dealing massive damage",
+  "type": "attack",
+  "power": 6,
+  "stam_consumption": 4
+}
+```
+Currently supported `type` are `attack` and `heal`.  
+If the `type` is `attack`: a `power` key with a int value should be included.  
+If the `type` is `heal`: a `heal_amount` key with a int value should be included.  
