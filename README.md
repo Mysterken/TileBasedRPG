@@ -48,12 +48,12 @@ Other key:
 
 # Adding/Modifying content
 
-### Ennemies
+### Enemies
 Stored in `Ennemies.json`.  
 You can modify or create a new one.  
-An ennemy should necessarily have those values:  
+An enemy should necessarily have those values:  
 ```
-ennemy: {
+enemy: {
   "name": string,
   "MAXHP": int,
   "DEX": int,
@@ -62,7 +62,7 @@ ennemy: {
   "STAM": int,
 }
 ```
-The ennemy can also have those stats, if not given they're set at a default value.  
+The enemy can also have those stats, if not given they're set at a default value.  
 WIP => Not immplemented yet: Optionnal argument  
 ```
 runnaway : int : Rate at which the ennemy run from the fight
