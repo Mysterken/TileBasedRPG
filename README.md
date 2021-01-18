@@ -2,7 +2,7 @@
 
 This is my project of a tile based rpg written in python.  
 The game was mostly written with versability in mind, feel free to add content or tweak values.  
-You can easily do so by [modifying](https://github.com/Mysterken/TileBasedRPG/blob/main/README.md#addingmodifying-content) files in the data folder.
+You can easily do so by [modifying](https://github.com/Mysterken/TileBasedRPG#addingmodifying-content) files in the data folder.
 
 ### Library and programs used:
 
