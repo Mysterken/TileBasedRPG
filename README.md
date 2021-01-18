@@ -62,7 +62,8 @@ ennemy: {
   "STAM": int,
 }
 ```
-WIP => Not immplemented yet: Optionnal argument
+The ennemy can also have those stats, if not given they're set at a default value.  
+WIP => Not immplemented yet: Optionnal argument  
 ```
 runnaway : int : Rate at which the ennemy run from the fight
 randomize : int : Randomize attribute in this range point
@@ -99,3 +100,18 @@ Result in:
 ![alt text](https://i.imgur.com/r0OJ1MP.png) ![alt text](https://i.imgur.com/TRusxCZ.png)  
 The face should either be an integer (0-7) or `"desc"`, passing an integer pick a face from the facesheet 
 to show on the side of the Dialog box while passing `"desc"` don't show the face and act as a description box.  
+You can also break line with `\n` but keep in mind that no more than 3 line should be on the same page to avoid text overflow.  
+
+### Props description
+Stored in `PropsDescription.json`.  
+Act like NPC dialogue but don't accept the `face`, instead just text.
+```
+PropsDescription: [
+  "Here is written the description of the props\nHere we break a line.",
+  "Here's another page of description."
+]
+```
+![alt text](https://i.imgur.com/Ku9mycl.png) ![alt text](https://i.imgur.com/nOm4pKi.png)  
+
+### Skills
+Stored in `Skills.json`.  
