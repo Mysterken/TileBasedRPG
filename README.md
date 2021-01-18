@@ -95,7 +95,7 @@ NPCDialogue: [
   "Hello i'm an NPC.\nHow are you?", 2
 ]
 ```
-Result in:
-
+Result in:  
+![alt text](https://i.imgur.com/r0OJ1MP.png) ![alt text](https://i.imgur.com/TRusxCZ.png)  
 The face should either be an integer (0-7) or `"desc"`, passing an integer pick a face from the facesheet 
 to show on the side of the Dialog box while passing `"desc"` don't show the face and act as a description box.  
