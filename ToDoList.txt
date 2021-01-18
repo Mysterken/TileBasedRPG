@@ -1,0 +1,12 @@
+CORE FEATURE:
+
+- Dialog with npc => done
+- Scripted event
+- Battle => WIP
+- Inventory => done
+- Map warp
+
+Additional:
+
+- Animation for everything
+- Save / Load => done

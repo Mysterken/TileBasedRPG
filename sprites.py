@@ -2,8 +2,11 @@ import os
 import pygame as pg
 from settings import TILESIZE, ANIMATION_SPEED
 from typing import List
+from usefulfunction import FUNCTION
 
 class Player(pg.sprite.Sprite):
+
+    "Player class: this is the player you control"
     
     def __init__(self):
 
@@ -18,29 +21,60 @@ class Player(pg.sprite.Sprite):
 
         # Temporary hard coded stats / might change to definable starting stats
         self.name = "Dummy Name"
-        MAXHP, ATK, DEF, STAM = 25, 5, 5, 5
+        MAXHP, DEX, ATK, DEF, STAM = 25, 5, 5, 5, 5
         
         # Stats => HP, ATK, DEF
         self.MAXHP = MAXHP
         self.HP = self.MAXHP
+        self.DEX = DEX
         self.ATK = ATK
         self.DEF = DEF
         self.STAM = STAM
 
+        self.escaped = False
+
     @property
     def position(self) -> List[float]:
+
+        "Return the player's coordinate."
+
         return list(self._position)
 
     @property
     def _rect(self):
+
+        "Return the player's pygame rect."
+
         return self.rect
 
     @property
     def get_HP(self):
+
+        "Return the player's HP"
+
         return self.HP
 
-    # Function assigned to what keys are pressed
+    def lose_HP(self, amount):
+
+        "Deduct an amount from the player's HP"
+
+        if self.HP - amount <= 0:
+            self.HP = 0
+        else:
+            self.HP -= amount
+
+    def gain_HP(self, amount):
+
+        "Add an amount to the player's HP"
+
+        if self.HP + amount >= self.MAXHP:
+            self.HP = self.MAXHP
+        else:
+            self.HP += amount
+            
     def key_pressed(self):
+
+        "Function assigned to what keys are pressed"
 
         keys = pg.key.get_pressed()
         self.temp_velocity = self.velocity
@@ -64,8 +98,9 @@ class Player(pg.sprite.Sprite):
             self.temp_position[1] += (round(self.temp_velocity * 0.25, 2)/2)
             self.temp_list.append("Down")
 
-    # Create a list of coordinate according to movement
     def update(self, dt):
+
+        "Update the player"
 
         self.temp_list = []
         self.temp_position = self.position
@@ -73,11 +108,13 @@ class Player(pg.sprite.Sprite):
 
         self.key_pressed()
 
+        # Create a list of coordinate according to movement
         self.rect_x_temp = self._rect.move((self.temp_position[0]-self.old_position[0]) * TILESIZE, 0)
         self.rect_y_temp = self._rect.move(0, (self.temp_position[1]-self.old_position[1]) * TILESIZE)
 
-    # Receive a list and apply movement present in the list
     def position_update(self, move_list):
+
+        "Receive a list and apply movement present in the list"
 
         for i in move_list:
 
@@ -92,11 +129,13 @@ class Player(pg.sprite.Sprite):
         self.rect.y = self._position[1] * TILESIZE
         self.animation(self.temp_list)
 
-    # Change player's animation depending on direction
     def animation(self, direction):
-    
-        # Check player.facing and .anim to give an area in the player's sprite-sheet
+
+        "Change player's animation depending on direction"
+
         def spritesheet_area(facing, anim):
+
+            "Check player.facing and .anim to give an area in the player's sprite-sheet"
             
             offset = TILESIZE
             direction_list = ['Down', 'Left', 'Right', 'Up']
@@ -146,3 +185,30 @@ class Player(pg.sprite.Sprite):
         self.sprite_area = spritesheet_area(self.facing, anim)
         self.image = pg.image.load(os.path.join('img', 'DefaultPlayer.png')).convert_alpha()
         self.image = self.image.subsurface(pg.Rect(self.sprite_area[0], self.sprite_area[1], TILESIZE, TILESIZE))
+
+    def dead(self):
+        
+        "Return whether or not the player is dead"
+        
+        if self.HP <= 0:
+            return True
+        return False
+
+    def do_action(self, action):
+
+        "Make the player perform the given skill"
+        
+        if action == "Run":
+            self.escaped = True
+            return
+        
+        elif action == "Wait":
+            return
+
+        return FUNCTION.skill(action)
+    
+    def in_fight(self):
+        
+        if self.dead() or self.escaped:
+            return False
+        return True

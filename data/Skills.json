@@ -1,0 +1,22 @@
+{
+    "Attack": {
+        "desc": "A regular attack.",
+        "type": "attack",
+        "power": 1,
+        "stam_consumption": 0
+    },
+
+    "Healing": {
+        "desc": "Heal a small portion of HP.",
+        "type": "heal",
+        "heal_amount": 20,
+        "stam_consumption": 3
+    },
+
+    "Heavy Slash": {
+        "desc": "A powerful slash.",
+        "type": "attack", 
+        "power": 5,
+        "stam_consumption": 3
+    }
+}

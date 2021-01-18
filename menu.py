@@ -8,6 +8,8 @@ class MenuFunction:
 
     def __init__(self):
 
+        "Default template for menu theme."
+
         self.theme_template = pgm.themes.Theme(
                 background_color = (64, 64, 64, 200),
                 menubar_close_button = False,
@@ -20,6 +22,8 @@ class MenuFunction:
             )
     
     def toggle(self, menu):
+
+        "Toggle the menu."
         
         # Reset menu to close sub-menu
         if menu.is_enabled():
@@ -29,10 +33,10 @@ class MenuFunction:
         menu.toggle()
 
     def SaveGame(self):
-        print("TODO Save system")
+        FUNCTION.create_save(self.GAME)
 
     def LoadSave(self):
-        print("TODO continue playing by loading a save")
+        FUNCTION.load_save(self.GAME)
 
     def ExitGame(self):
         FUNCTION.quit()
@@ -49,11 +53,14 @@ class MenuFunction:
 # Need to .toggle then .mainloop(surface)
 class TitleScreenMenu(MenuFunction):
 
+    "Title Screen menu."
+
     # Create Title
     def __init__(self, GAME):
 
         super().__init__()
 
+        self.GAME = GAME
         self.new_game = False
         self.fullscreen_enabled = False
 
@@ -74,18 +81,31 @@ class TitleScreenMenu(MenuFunction):
 
         # Initiate sub-menu class
         self.OptionMenu = OptionMenu()
+        self.BattleMenu = BattleMenu()
 
         self.title_screen.add_button('Start new game', self.start_new_game)
-        self.title_screen.add_button('Load Save', self.LoadSave, padding=(0, 36, 0, 35))
+        self.title_screen.add_button('Load Save', self.load_save, padding=(0, 36, 0, 35))
         self.title_screen.add_button('Option', self.OptionMenu.Menu, padding=(0, 60, 0, 60))
         self.title_screen.add_button('About', self.About, padding=(0, 64, 0, 64))
         self.title_screen.add_button('Exit', self.ExitGame, padding=(0, 80, 0, 80))
 
     def start_new_game(self):
+
+        "Initiate a new game."
+
         self.new_game = True
         self.title_screen._enabled = False
 
+    def load_save(self):
+
+        "Load a save from the save folder, the file should be game_save"
+
+        self.title_screen._enabled = False
+        self.LoadSave()
+
     def show_title_screen(self, surface, dirty_surface, screen_size):
+
+        "Display the title screen, pygame events are processed within the function."
 
         background = pg.image.load(os.path.join('img', 'FieldBG.jpg')).convert_alpha()
 
@@ -122,6 +142,8 @@ class TitleScreenMenu(MenuFunction):
 
 class InGameMenu(MenuFunction):
 
+    "Menu displayed In-Game whenever the game is paused"
+
     def __init__(self, GAME):
 
         super().__init__()
@@ -145,19 +167,24 @@ class InGameMenu(MenuFunction):
         self.StatusMenu = StatusMenu(GAME)
         self.InventoryMenu = InventoryMenu(GAME)
 
-        self.Menu.add_button('         Item         ', self.show_inventory_menu)
-        self.Menu.add_button('        Equip        ', self.MenuEquip)
-        self.Menu.add_button('       Status       ', self.show_status_menu)
-        self.Menu.add_button('       Option       ', self.OptionMenu.Menu)
-        self.Menu.add_button('         Save         ', self.SaveGame)
-        self.Menu.add_button('         Load         ', self.LoadSave)
-        self.Menu.add_button('         Quit         ', self.ExitGame)
+        self.Menu.add_button('Item', self.show_inventory_menu, padding=(0, 75, 0, 75))
+        self.Menu.add_button('Equip', self.MenuEquip, padding=(0, 66, 0, 67))
+        self.Menu.add_button('Status', self.show_status_menu, padding=(0, 61, 0, 61))
+        self.Menu.add_button('Option', self.OptionMenu.Menu, padding=(0, 59, 0, 59))
+        self.Menu.add_button('Save', self.SaveGame, padding=(0, 72, 0, 73))
+        self.Menu.add_button('Load', self.LoadSave, padding=(0, 71, 0, 72))
+        self.Menu.add_button('Quit', self.ExitGame, padding=(0, 79, 0, 79))
 
     def show_inventory_menu(self):
+
+        "Display the inventory menu."
 
         # Remove item and reset the inventory data
         def use_item(item):
 
+            "Use and remove the passed item from the inventory."
+
+            self.GAME.use_item(item)
             self.GAME.inventory.remove_item(item)
             self.show_inventory_menu()
        
@@ -175,11 +202,12 @@ class InGameMenu(MenuFunction):
 
             self.InventoryMenu.Menu.add_button(item, use_item, item)
             self.InventoryMenu.item_list.append(item)
-
+        # TODO: check Menu._select to force select an item and not reset each time
         self.Menu._open(self.InventoryMenu.Menu)
 
-    # Reset status menu to update value
     def show_status_menu(self):
+
+        "Display the status menu."
 
         # Remove widget from the menu
         self.StatusMenu.Menu.clear()
@@ -190,6 +218,7 @@ class InGameMenu(MenuFunction):
         player_hp = str(self.StatusMenu.GAME.player.HP)
         player_atk = str(self.StatusMenu.GAME.player.ATK)
         player_def = str(self.StatusMenu.GAME.player.DEF)
+        player_dex = str(self.StatusMenu.GAME.player.DEX)
         player_stam = str(self.StatusMenu.GAME.player.STAM)
 
         # Create widget with updated data
@@ -198,11 +227,14 @@ class InGameMenu(MenuFunction):
         self.StatusMenu.Menu.add_label(player_maxhp + 'HP / ' + player_hp + 'HP')
         self.StatusMenu.Menu.add_label("ATK: " + player_atk)
         self.StatusMenu.Menu.add_label("DEF: " + player_def)
+        self.StatusMenu.Menu.add_label("DEXTERITY: " + player_dex)
         self.StatusMenu.Menu.add_label("STAMINA: " + player_stam)
 
         self.Menu._open(self.StatusMenu.Menu)
 
 class OptionMenu(MenuFunction):
+
+    "Option menu."
 
     def __init__(self):
 
@@ -225,7 +257,7 @@ class OptionMenu(MenuFunction):
         menu_position = (50, 50)
         )
 
-        # music / sfx / display / zoom / always sprint / Auto save
+        # Only for display as of now except for "Back"
         self.Menu.add_button('Back', pgm.events.BACK)
         self.Menu.add_selector('Music Volume', [("0", 0), ("5", 0.5), ("10", 0.1)])
         self.Menu.add_selector('SFX Volume', [("0", 0), ("5", 0.5), ("10", 0.1)])
@@ -234,6 +266,8 @@ class OptionMenu(MenuFunction):
         self.Menu.add_selector('Auto Save', [("Disabled", False), ("Enabled", True)])
 
 class StatusMenu(MenuFunction):
+
+    "Status menu."
 
     def __init__(self, GAME):
 
@@ -253,6 +287,8 @@ class StatusMenu(MenuFunction):
         self.GAME = GAME
 
 class InventoryMenu(MenuFunction):
+
+    "Inventory menu."
 
     def __init__(self, GAME):
 
@@ -281,11 +317,13 @@ class InventoryMenu(MenuFunction):
         self.GAME = GAME
 
     def item_desc(self):
+
+        "Fetch the description of the item pointed and return it."
         
         text = []
         if self.item_list:
             
-            desc = FUNCTION.fetch_item_desc(self, self.item_list[self.Menu.get_index()]).rsplit('\n')
+            desc = FUNCTION.fetch_item_desc(self.item_list[self.Menu.get_index()]).split('\n')
             for line in desc:
 
                 text_surface = FUNCTION.font_render(self.GAME, line)
@@ -293,3 +331,60 @@ class InventoryMenu(MenuFunction):
         else:
             text = [FUNCTION.font_render(self.GAME, "")]
         return text
+
+class BattleMenu(MenuFunction):
+
+    "Battle menu to select the player's action during the fight."
+
+    def __init__(self):
+
+        super().__init__()
+
+        BattleMenuTheme = self.theme_template.copy()
+        BattleMenuTheme.widget_margin = (0, 15)
+        BattleMenuTheme.title_font_size = 1
+
+        self.Menu = pgm.Menu(
+            enabled = False,
+            height = 200,
+            width = 300,
+            columns = 2,
+            rows = 3,
+            column_max_width = [1, 1],
+            theme = BattleMenuTheme,
+            title = '',
+            menu_position = (0, 100)
+        )
+
+        self.sent_action = None
+
+        self.Menu.add_button('Attack', self.attack, padding=(0, 4, 0, 4))
+        self.Menu.add_button('Skill', self.skill, padding=(0, 21, 0, 21))
+        self.Menu.add_button('Defend', self.defend)
+        self.Menu.add_button('Wait', self.wait, padding=(0, 18, 0, 18))
+        self.Menu.add_button('Item', self.About, padding=(0, 18, 0, 18))
+        self.Menu.add_button('Run', self.run, padding=(0, 22, 0, 22))
+
+    def attack(self):
+        
+        self.sent_action = "Attack"
+
+    def skill(self):
+
+        print("TODO skill handling")
+
+    def defend(self):
+
+        print("TODO Defend")
+
+    def wait(self):
+
+        self.sent_action = "Wait"
+
+    def item(self):
+
+        print("TODO item handling")
+
+    def run(self):
+
+        self.sent_action = "Run"

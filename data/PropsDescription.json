@@ -1,0 +1,11 @@
+{
+    "Mailbox": ["It's someone's mailbox, I probably shouldn't touch it..."],
+    
+    "AxeTreeStump": ["An axe is stuck here on this stump."],
+
+    "TreeStump": ["It's just a tree stump.",
+                "Something is stuck in it..."],
+
+    "Hole": ["There's a deep hole right there.",
+            "Oh no!\nYou dropped an item!"]
+}

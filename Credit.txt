@@ -1,2 +1,3 @@
-FieldBG - http://moonwind.pw/index.html
-Player model and tileset - https://pipoya.net/blog/
+FieldBG and PlainBattlefield - http://moonwind.pw/index.html
+Tileset - https://pipoya.net/blog/
+Character model - https://blog.goo.ne.jp/akarise

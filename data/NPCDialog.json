@@ -1,0 +1,6 @@
+{
+    "BobDialogue": ["A scarecrow is planted here.", "desc",
+                    "Hello i'm Bob!\nI am a farmer.", 5, 
+                    "Help me..\nAAaaaAAAaAAaA", 4,
+                    "What's his deal?\nBetter get away quickly...", "DefaultPlayerFace4"]
+}
