@@ -63,7 +63,7 @@ enemy: {
 }
 ```
 The enemy can also have those stats, if not given they're set at a default value.  
-WIP => Not immplemented yet: Optionnal argument  
+WIP => Not implemented yet: Optionnal argument  
 ```
 runnaway : int : Rate at which the ennemy run from the fight
 randomize : int : Randomize attribute in this range point
