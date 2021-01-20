@@ -6,11 +6,11 @@ You can easily do so by [modifying](https://github.com/Mysterken/TileBasedRPG#ad
 
 ### Library and programs used:
 
-- [pygame](https://github.com/pygame/pygame)   
+- [pygame](https://github.com/pygame/pygame)  
 - [PyTMX](https://github.com/bitcraft/pytmx)  
 - [pyscroll](https://github.com/bitcraft/pyscroll)  
 - [pygame-menu](https://github.com/ppizarror/pygame-menu)  
-- [Tiled](https://www.mapeditor.org/) 
+- [Tiled](https://www.mapeditor.org/)  
 
 ### Ressource:
 
@@ -33,10 +33,10 @@ Launch Game.py to play the game
 ### Controls
 
 Move the player with:  
-- __[z]__ Move up  
-- __[q]__ Move left  
-- __[s]__ Move down  
-- __[d]__ Move right  
+- __[key_up]__ Move up  
+- __[key_left]__ Move left  
+- __[key_down]__ Move down  
+- __[key_right]__ Move right  
 
 Other key:  
 - __[x]__ Open/close pause menu  
