@@ -44,7 +44,7 @@ Other key:
 - __[enter-key]__ Select button in menu  
 - __[scrollwheel]__ Zoom/Dezoom the map
 - __[F12]__ Fullscreen/Windowed
-- __[echap]__ Exit game
+- __[escape]__ Exit game
 
 # Adding/Modifying content
 
